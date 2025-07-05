@@ -6,6 +6,7 @@ namespace CarRentalSystem.Models
     public class Car : IBaseObject, ICar
     {
         public int ID { get; set; }
+        public bool IsDeleted { get; set; }
         public string Make { get; set; }
         public string Model { get; set; }
         public int Year { get; set; }
@@ -19,15 +20,17 @@ namespace CarRentalSystem.Models
                 if (args.Length > 0)
                     ID = int.Parse(args[0]);
                 if (args.Length > 1)
-                    Make = args[1];
+                    IsDeleted = bool.Parse(args[1]);
                 if (args.Length > 2)
-                    Model = args[2];
+                    Make = args[2];
                 if (args.Length > 3)
-                    Year = int.Parse(args[3]);
+                    Model = args[3];
                 if (args.Length > 4)
-                    CarType = args[4];
+                    Year = int.Parse(args[4]);
                 if (args.Length > 5)
-                    Availability = bool.Parse(args[5]);
+                    CarType = args[5];
+                if (args.Length > 6)
+                    Availability = bool.Parse(args[6]);
             }
 
         }
@@ -42,12 +45,12 @@ namespace CarRentalSystem.Models
 
         public string Info()
         {
-            return $"{Make} {Model}, type {CarType} ({Year}y.)";
+            return $"{Make} {Model}, type: {CarType} ({Year}y.)";
         }
 
         public string ExtendedInfo()
         {
-            return Info() + $", ID {ID}, {(Availability ? "Available" : "Rented")}";
+            return Info() + $", ID: {ID}, {(Availability ? "Available" : "Rented")}";
         }
     }
 }

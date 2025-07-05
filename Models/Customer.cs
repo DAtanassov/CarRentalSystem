@@ -7,6 +7,7 @@ namespace CarRentalSystem.Models
     public class Customer : IBaseObject, ICustomer
     {
         public int ID { get; set; }
+        public bool IsDeleted { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
@@ -18,11 +19,13 @@ namespace CarRentalSystem.Models
                 if (args.Length > 0)
                     ID = int.Parse(args[0]);
                 if (args.Length > 1)
-                    Name = args[1];
+                    IsDeleted = bool.Parse(args[1]);
                 if (args.Length > 2)
-                    Email = args[2];
+                    Name = args[2];
                 if (args.Length > 3)
-                    Phone = args[3];
+                    Email = args[3];
+                if (args.Length > 4)
+                    Phone = args[4];
             }
 
         }
@@ -40,7 +43,7 @@ namespace CarRentalSystem.Models
 
         public string ExtendedInfo()
         {
-            return Info() + $", ID {ID} , e-mail {Email}, phone {Phone}";
+            return Info() + $", ID: {ID}, e-mail: {Email}, phone: {Phone}";
         }
     }
 }

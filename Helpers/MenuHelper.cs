@@ -141,5 +141,37 @@ namespace CarRentalSystem.Helpers
 
             return menu;
         }
+
+        public void PrintRemoveItemHeader(string itemName, bool printName = true)
+            => PrintMenuHeader($"Remove {itemName}", printName);
+
+        public Dictionary<int, string[]> GetRemoveItemMenu()
+        {
+            // Create a dictionary to hold the Main menu items
+            Dictionary<int, string[]> menu = new Dictionary<int, string[]>();
+
+            menu.Add(menu.Count + 1, ["Delete (remove all data)", "1"]);
+            menu.Add(menu.Count + 1, ["Remove (mark as deleted)", "2"]);
+            menu.Add(menu.Count + 1, ["Cancel", "3"]);
+
+            return menu;
+        }
+
+        public void PrintRentACarHeader(bool printName = true)
+            => PrintMenuHeader("Ren A Car", printName);
+        public Dictionary<int, string[]> GetRentACarMenu(Car? car, Customer? customer, DateTime? startDate, DateTime? endDate)
+        {
+            // Create a dictionary to hold the Main menu items
+            Dictionary<int, string[]> menu = new Dictionary<int, string[]>();
+
+            menu.Add(menu.Count + 1, [$"Car: {((car == null) ? "<select>" : car.Info())}", "1"]);
+            menu.Add(menu.Count + 1, [$"Customer: {((customer == null) ? "<select>" : customer.Info())}", "2"]);
+            menu.Add(menu.Count + 1, [$"Start date: {((startDate == null) ? "<select>" : ((DateTime)startDate).ToShortDateString())}", "3"]);
+            menu.Add(menu.Count + 1, [$"End date: {((endDate == null) ? "<select>" : ((DateTime)endDate).ToShortDateString())}", "4"]);
+            menu.Add(menu.Count + 1, ["Rent", "5"]);
+            menu.Add(menu.Count + 1, ["Cancel", "6"]);
+
+            return menu;
+        }
     }
 }

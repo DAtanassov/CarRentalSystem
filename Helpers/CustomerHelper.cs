@@ -1,7 +1,6 @@
 ﻿using CarRentalSystem.DB.CSV;
 using CarRentalSystem.Helpers.Interfaces;
 using CarRentalSystem.Models;
-using CarRentalSystem.Models.Interfaces;
 
 namespace CarRentalSystem.Helpers
 {
@@ -35,9 +34,24 @@ namespace CarRentalSystem.Helpers
             return items.FirstOrDefault(i => i.ID == id);
         }
 
+        public void PrintItems()
+        {
+            MenuHelper.PrintAppName();
+            Console.WriteLine("\t\tCustomers\n");
+
+            List<Customer> items = GetItems();
+            items = items.Where(x => !x.IsDeleted).ToList();
+
+            int counter = 0;
+            foreach (Customer item in items)
+                Console.WriteLine($"\t{++counter}. {item.ExtendedInfo()}");
+
+        }
+
         public Customer? SelectItem()
         {
             List<Customer> items = GetItems();
+            items = items.Where(x => !x.IsDeleted).ToList();
 
             if (items.Count == 0)
                 return null;
@@ -185,7 +199,7 @@ namespace CarRentalSystem.Helpers
                             item.Email = customerEmail;
                         break;
                     case "3":
-                        string customerPhone = "";
+                        string customerPhone = ""; // TODO - Validating
                         do
                         {
                             menuHelper.PrintAddEditCarMenuHeader(newItem);
@@ -234,22 +248,82 @@ namespace CarRentalSystem.Helpers
 
         }
 
-        public bool RemoveItem(Customer customer)
+        public bool RemoveItem(Customer item)
         {
-            MenuHelper.PrintAppName();
+            string title = "Customer";
 
-            Console.Write($"\tDelete customer \"{customer.Info()}\" and all his data? (\"Y/n\"): ");
-            if ((Console.ReadLine() ?? "n").ToLower() != "y")
-                return false;
+            Console.CursorVisible = false;
+            MenuHelper menuHelper = new MenuHelper();
+            menuHelper.PrintRemoveItemHeader(title);
+            var menuParams = new MenuHelper.MenuParams(1);
+            (menuParams.left, menuParams.top) = Console.GetCursorPosition();
 
-            dbService.Delete(customer);
+            Dictionary<int, string[]> menu = menuHelper.GetRemoveItemMenu();
 
-            return true;
-        }
+            bool cancel = false;
+            bool running = true;
 
-        bool IHelper<Customer>.AddEditItem(Customer? item)
-        {
-            return AddEditItem(item);
+            while (running)
+            {
+                Console.SetCursorPosition(menuParams.left, menuParams.top);
+
+                menuHelper.PrintMenuElements(menu, menuParams);
+
+                menuParams.key = Console.ReadKey(false);
+
+                string option = string.Empty;
+
+                switch (menuParams.key.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                        menuParams.choice = menuParams.choice == 1 ? menu.Count : menuParams.choice - 1;
+                        break;
+
+                    case ConsoleKey.DownArrow:
+                        menuParams.choice = menuParams.choice == menu.Count ? 1 : menuParams.choice + 1;
+                        break;
+
+                    case ConsoleKey.Enter:
+                        option = menu[menuParams.choice][1];
+                        break;
+                }
+
+                if (string.IsNullOrEmpty(option) && menuParams.key.Key != ConsoleKey.Enter)
+                    continue; // Skip if no option selected
+
+                Console.CursorVisible = true;
+                switch (option)
+                {
+                    case "1":
+                        menuHelper.PrintRemoveItemHeader(title);
+                        Console.Write($"\tAll data will be removed! Continue? (\"Y/n\"): ");
+                        if ((Console.ReadLine() ?? "n").ToLower() == "y")
+                        {
+                            dbService.Delete(item);
+                            running = false;
+                        }
+                        break;
+                    case "2":
+                        menuHelper.PrintRemoveItemHeader(title);
+                        Console.Write($"\tMark as deleted? (\"Y/n\"): ");
+                        if ((Console.ReadLine() ?? "n").ToLower() == "y")
+                        {
+                            item.IsDeleted = true;
+                            dbService.Update(item);
+                            running = false;
+                        }
+                        break;
+                    case "3":
+                        cancel = true;
+                        running = false;
+                        break;
+                }
+                Console.CursorVisible = false;
+                menuHelper.PrintRemoveItemHeader(title);
+                (menuParams.left, menuParams.top) = Console.GetCursorPosition();
+            }
+
+            return !cancel;
         }
     }
 }

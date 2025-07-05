@@ -10,6 +10,7 @@ namespace CarRentalSystem.Helpers.Interfaces
         T? GetItemById(int id);
         T? GetItemById(List<T> items, int id);
         T? SelectItem();
+        void PrintItems();
         bool AddItem();
         bool EditItem(T item);
         bool AddEditItem(T? item);

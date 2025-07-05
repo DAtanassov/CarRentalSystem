@@ -16,6 +16,8 @@ namespace CarRentalSystem.DB.CSV
             if (index == -1)
                 return;
 
+            new RentalDB().DeleteByCarId(item.ID);
+
             list.RemoveAt(index);
 
             WriteToFile(list, path);
