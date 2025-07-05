@@ -19,7 +19,7 @@ namespace CarRentalSystem.Models
         }
         public void ExitMenu()
         {
-            menuHelper.PrintAppName();
+            MenuHelper.PrintAppName();
 
             Console.CursorVisible = true;
             Console.Write("\tExit application? [Y/n]: ");
@@ -32,6 +32,9 @@ namespace CarRentalSystem.Models
 
         private void MainMenu()
         {
+
+            CarHelper carHelper = new CarHelper();
+
             Console.CursorVisible = false;
             menuHelper.PrintMainMenuHeader();
             var menuParams = new MenuHelper.MenuParams(1);
@@ -39,6 +42,8 @@ namespace CarRentalSystem.Models
 
             Dictionary<int, string[]> menu = menuHelper.GetMainMenu();
 
+            // variable for the selected car (edit/remove)
+            Car? car = null;
 
             bool running = true;
 
@@ -74,14 +79,52 @@ namespace CarRentalSystem.Models
                 switch (option)
                 {
                     case "1": // Add Car
-                        Console.WriteLine("\n\tPress any key to return to the main menu...");
+                        if (carHelper.AddCar())
+                            Console.WriteLine("\tThe car was created successfully.");
+                        else
+                            Console.WriteLine("\tThe car was not created.");
+                        Console.WriteLine("\n\tPress any key to continue...");
                         Console.ReadKey(); // Wait for user input before continuing
                         break;
                     case "2": // Edit Car
-                        Console.WriteLine("\n\tPress any key to return to the main menu...");
+                        car = carHelper.SelectCar();
+                        if (car != null)
+                        {
+                            if (carHelper.EditCar(car))
+                                Console.WriteLine("\tThe car was modified successfully.");
+                            else
+                                Console.WriteLine("\tThe car was not modified.");
+
+                        }
+                        else
+                        {
+                            MenuHelper.PrintAppName();
+                            Console.WriteLine("\tNo car selected for editing.");
+                        }
+                        Console.WriteLine("\n\tPress any key to continue...");
                         Console.ReadKey(); // Wait for user input before continuing
                         break;
                     case "3": // Remove Car
+                        car = carHelper.SelectCar();
+                        if (car != null)
+                        {
+                            if (carHelper.Remove(car))
+                            {
+                                MenuHelper.PrintAppName();
+                                Console.WriteLine("\tThe car was removed successfully.");
+                            }
+                            else
+                            {
+                                MenuHelper.PrintAppName();
+                                Console.WriteLine("\tThe car was not removed.");
+
+                            }
+                        }
+                        else
+                        {
+                            MenuHelper.PrintAppName(); 
+                            Console.WriteLine("\tNo car selected for removing.");
+                        }
                         Console.WriteLine("\n\tPress any key to return to the main menu...");
                         Console.ReadKey(); // Wait for user input before continuing
                         break;

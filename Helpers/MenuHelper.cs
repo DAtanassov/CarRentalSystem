@@ -1,4 +1,6 @@
 ﻿
+using CarRentalSystem.Models;
+
 namespace CarRentalSystem.Helpers
 {
     public class MenuHelper
@@ -9,10 +11,10 @@ namespace CarRentalSystem.Helpers
         public struct MenuParams
         {
             // Properties to hold the menu parameters
-            public int left { get; set; }
-            public int top { get; set; }
-            public int choice { get; set; }
-            public string prefix { get; } = "\u001b[32m• ";
+            public int left { get; set; } // cursor left position
+            public int top { get; set; } // cursor top position
+            public int choice { get; set; } // line position of cursor 
+            public string prefix { get; } = "\u001b[32m• "; // prefix for marked line
             public ConsoleKeyInfo key { get; set; }
             public MenuParams(int _choice)
             {
@@ -22,7 +24,7 @@ namespace CarRentalSystem.Helpers
             }
         }
 
-        public void PrintAppName(bool clear = true)
+        public static void PrintAppName(bool clear = true)
         {
             if (clear)
                 Console.Clear();
@@ -65,5 +67,29 @@ namespace CarRentalSystem.Helpers
             return menu;
         }
 
+        public void PrintAddEditCarMenuHeader(bool newCar, bool printName = true)
+        {
+            if (printName)
+                PrintAppName();
+            // Print the add/edit menu header
+            Console.WriteLine($"\t\t\u001b[1m{(newCar ? "Create" : "Edit")} Car\u001b[0m\n");
+        }
+
+        public Dictionary<int, string[]> GetAddEditCarMenu(Car car, bool newCar)
+        {
+            // Create a dictionary to hold the car add/edit menu items
+            Dictionary<int, string[]> menu = new Dictionary<int, string[]>();
+
+            menu.Add(menu.Count + 1, [$"Make: {car.Make}", "1"]);
+            menu.Add(menu.Count + 1, [$"Model: {car.Model}", "2"]);
+            menu.Add(menu.Count + 1, [$"Year: {car.Year}", "3"]);
+            menu.Add(menu.Count + 1, [$"Type: {car.CarType}", "4"]);
+            if (!newCar) // if a new car is aways Available
+                menu.Add(menu.Count + 1, [$"Availability: {(car.Availability ? "Available" : "Rented")}", "5"]);
+            menu.Add(menu.Count + 1, ["Save", "6"]);
+            menu.Add(menu.Count + 1, ["Cancel", "7"]);
+
+            return menu;
+        }
     }
 }
