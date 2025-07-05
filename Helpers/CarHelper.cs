@@ -1,7 +1,6 @@
 ﻿using CarRentalSystem.DB.CSV;
 using CarRentalSystem.Helpers.Interfaces;
 using CarRentalSystem.Models;
-using CarRentalSystem.Models.Interfaces;
 
 namespace CarRentalSystem.Helpers
 {
@@ -251,8 +250,18 @@ namespace CarRentalSystem.Helpers
                         item.Availability = !item.Availability;
                         break;
                     case "6":
-                        // TODO - Validating
-                        running = false;
+                        if (!string.IsNullOrEmpty(item.Make)
+                            && !string.IsNullOrEmpty(item.Model)
+                            && !string.IsNullOrEmpty(item.CarType)
+                            && item.Year > 0)
+                            running = false;
+                        else
+                        {
+                            menuHelper.PrintAddEditCarMenuHeader(newItem);
+                            Console.WriteLine("\n\tMake, Model, Year and Type are required!");
+                            Console.WriteLine("\n\tPress any key to return to the main menu...");
+                            Console.ReadKey(); // Wait for user input before continuing
+                        }
                         break;
                     case "7": // Cancel
                         cancel = true;

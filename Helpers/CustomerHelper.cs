@@ -8,6 +8,7 @@ namespace CarRentalSystem.Helpers
     {
         // Object for read and write to database file
         private static readonly DBService<Customer> dbService = new DBService<Customer>(new CustomerDB());
+        private static readonly Validator<Customer> validator = new Validator<Customer>();
 
         public List<Customer> GetItems() => dbService.GetList();
 
@@ -118,6 +119,8 @@ namespace CarRentalSystem.Helpers
             if (item == null)
                 item = new Customer("", "", ""); // Creat customer object if add new
 
+            List<Customer> items = GetItems();
+
             Console.CursorVisible = false;
             MenuHelper menuHelper = new MenuHelper();
 
@@ -180,46 +183,62 @@ namespace CarRentalSystem.Helpers
                             item.Name = customerName;
                         break;
                     case "2":
-                        string customerEmail = ""; // TODO - Validating
+                        string customerEmail = "";
                         do
                         {
                             menuHelper.PrintAddEditCarMenuHeader(newItem);
                             Console.Write("\tCustomer e-mail address: ");
                             customerEmail = Console.ReadLine() ?? string.Empty;
 
-                            if (string.IsNullOrEmpty(customerEmail))
+                            if (!validator.EmailValidate(customerEmail, item.ID, dbService, items))
                             {
-                                Console.Write("\tE-mail address cannot be empty! Cancel input? (\"Y/n\"): ");
+                                if (string.IsNullOrEmpty(customerEmail))
+                                    Console.WriteLine("\tEmail address cannot be empty!");
+                                else
+                                    Console.WriteLine("\tEmail address is used or not valid!");
+
+                                Console.Write("\tCancel input? (\"Y/n\"): ");
                                 if ((Console.ReadLine() ?? "n").ToLower() == "y")
                                     break;
                             }
 
-                        } while (string.IsNullOrEmpty(customerEmail));
-                        if (!string.IsNullOrEmpty(customerEmail) && item.Email != customerEmail)
+                        } while (!validator.EmailValidate(customerEmail, item.ID, dbService, items));
+                        if (validator.EmailValidate(customerEmail, item.ID, dbService, items))
                             item.Email = customerEmail;
                         break;
                     case "3":
-                        string customerPhone = ""; // TODO - Validating
+                        string customerPhone = "";
                         do
                         {
                             menuHelper.PrintAddEditCarMenuHeader(newItem);
                             Console.Write("\tCustomer phone number: ");
+                            (menuParams.left, menuParams.top) = Console.GetCursorPosition();
+                            Console.WriteLine("\n\t(123-456-7890, (123) 456-7890, 1234567890)");
+                            Console.SetCursorPosition(menuParams.left, menuParams.top);
+
                             customerPhone = Console.ReadLine() ?? string.Empty;
 
-                            if (string.IsNullOrEmpty(customerPhone))
+                            if (!validator.PhoneNumberValidate(customerPhone, item.ID, dbService, items))
                             {
-                                Console.Write("\tPhone number cannot be empty! Cancel input? (\"Y/n\"): ");
+                                Console.Write("\tPhone number is not valid! Cancel input? (\"Y/n\"): ");
                                 if ((Console.ReadLine() ?? "n").ToLower() == "y")
                                     break;
                             }
 
-                        } while (string.IsNullOrEmpty(customerPhone));
-                        if (!string.IsNullOrEmpty(customerPhone) && item.Phone != customerPhone)
+                        } while (!validator.PhoneNumberValidate(customerPhone, item.ID, dbService, items));
+                        if (validator.PhoneNumberValidate(customerPhone, item.ID, dbService, items))
                             item.Phone = customerPhone;
                         break;
                     case "4":
-                        // TODO - Validating
-                        running = false;
+                        if (validator.CustomerValidate(item))
+                            running = false;
+                        else
+                        {
+                            menuHelper.PrintAddEditCarMenuHeader(newItem);
+                            Console.WriteLine("\n\tName, E-mail and Phone number are required!");
+                            Console.WriteLine("\n\tPress any key to return to the main menu...");
+                            Console.ReadKey(); // Wait for user input before continuing
+                        }
                         break;
                     case "5": // Cancel
                         cancel = true;

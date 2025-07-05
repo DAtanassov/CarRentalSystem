@@ -3,10 +3,8 @@ using CarRentalSystem.Models.Interfaces;
 
 namespace CarRentalSystem.Models
 {
-    public class Car : IBaseObject, ICar
+    public class Car : BaseObject, ICar
     {
-        public int ID { get; set; }
-        public bool IsDeleted { get; set; }
         public string Make { get; set; }
         public string Model { get; set; }
         public int Year { get; set; }
@@ -17,20 +15,21 @@ namespace CarRentalSystem.Models
         {
             if (args != null && args.Any())
             {
+                
                 if (args.Length > 0)
-                    ID = int.Parse(args[0]);
+                    Make = args[0];
                 if (args.Length > 1)
-                    IsDeleted = bool.Parse(args[1]);
+                    Model = args[1];
                 if (args.Length > 2)
-                    Make = args[2];
+                    Year = int.Parse(args[2]);
                 if (args.Length > 3)
-                    Model = args[3];
+                    CarType = args[3];
                 if (args.Length > 4)
-                    Year = int.Parse(args[4]);
+                    Availability = bool.Parse(args[4]);
                 if (args.Length > 5)
-                    CarType = args[5];
+                    ID = int.Parse(args[5]);
                 if (args.Length > 6)
-                    Availability = bool.Parse(args[6]);
+                    IsDeleted = bool.Parse(args[6]);
             }
 
         }
@@ -43,12 +42,12 @@ namespace CarRentalSystem.Models
             Availability = true;
         }
 
-        public string Info()
+        public override string Info()
         {
             return $"{Make} {Model}, type: {CarType} ({Year}y.)";
         }
 
-        public string ExtendedInfo()
+        public override string ExtendedInfo()
         {
             return Info() + $", ID: {ID}, {(Availability ? "Available" : "Rented")}";
         }
