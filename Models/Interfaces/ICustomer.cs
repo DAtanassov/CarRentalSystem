@@ -7,6 +7,5 @@ namespace CarRentalSystem.Models.Interfaces
         string Email { get; set; }
         string Phone { get; set; }
 
-        string Info();
     }
 }

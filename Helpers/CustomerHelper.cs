@@ -1,42 +1,43 @@
 ﻿using CarRentalSystem.DB.CSV;
 using CarRentalSystem.Helpers.Interfaces;
 using CarRentalSystem.Models;
+using CarRentalSystem.Models.Interfaces;
 
 namespace CarRentalSystem.Helpers
 {
-    public class CarHelper : IHelper<Car>
+    public class CustomerHelper : IHelper<Customer>
     {
         // Object for read and write to database file
-        private static readonly DBService<Car> dbService = new DBService<Car>(new CarDB());
+        private static readonly DBService<Customer> dbService = new DBService<Customer>(new CustomerDB());
 
-        public List<Car> GetItems() => dbService.GetList();
+        public List<Customer> GetItems() => dbService.GetList();
 
-        public List<Car> GetItems(int[] id)
+        public List<Customer> GetItems(int[] id)
         {
-            List<Car> items = GetItems();
+            List<Customer> items = GetItems();
 
             if (id.Length > 0)
                 items = items.Where(x => id.Contains(x.ID)).ToList();
 
             return items;
         }
-
-        public Car? GetItemById(int id)
+        
+        public Customer? GetItemById(int id)
         {
-            List<Car> items = GetItems([id]);
+            List<Customer> items = GetItems([id]);
             return GetItemById(items, id);
         }
 
-        public Car? GetItemById(List<Car> items, int id)
+        public Customer? GetItemById(List<Customer> items, int id)
         {
             if (items.Count == 0)
                 return null;
             return items.FirstOrDefault(i => i.ID == id);
         }
 
-        public Car? SelectItem()
+        public Customer? SelectItem()
         {
-            List<Car> items = GetItems();
+            List<Customer> items = GetItems();
 
             if (items.Count == 0)
                 return null;
@@ -44,7 +45,7 @@ namespace CarRentalSystem.Helpers
             Console.CursorVisible = false;
             MenuHelper menuHelper = new MenuHelper();
             MenuHelper.PrintAppName();
-            Console.WriteLine("\t\tSelect car\n");
+            Console.WriteLine("\t\tSelect customer\n");
 
             var menuParams = new MenuHelper.MenuParams(1);
             (menuParams.left, menuParams.top) = Console.GetCursorPosition();
@@ -59,7 +60,7 @@ namespace CarRentalSystem.Helpers
                 menu.Remove(i - 1);
             }
 
-            Car? item = null;
+            Customer? item = null;
 
             bool running = true;
             while (running)
@@ -93,29 +94,29 @@ namespace CarRentalSystem.Helpers
 
         public bool AddItem() => AddEditItem(null);
 
-        public bool EditItem(Car item) => AddEditItem(item);
+        public bool EditItem(Customer item) => AddEditItem(item);
 
-        public bool AddEditItem(Car? item)
+        public bool AddEditItem(Customer? item)
         {
             bool newItem = (item == null);
             bool cancel = false;
 
             if (item == null)
-                item = new Car("", "", ""); // Creat car object if add new
+                item = new Customer("", "", ""); // Creat customer object if add new
 
             Console.CursorVisible = false;
             MenuHelper menuHelper = new MenuHelper();
 
-            menuHelper.PrintAddEditCarMenuHeader(newItem);
+            menuHelper.PrintAddEditCustomerMenuHeader(newItem);
 
-            Dictionary<int, string[]> menu = menuHelper.GetAddEditCarMenu(item, newItem);
+            Dictionary<int, string[]> menu = menuHelper.GetAddEditCustomerMenu(item);
             var menuParams = new MenuHelper.MenuParams(1);
             (menuParams.left, menuParams.top) = Console.GetCursorPosition();
             bool running = true;
             while (running)
             {
                 Console.SetCursorPosition(menuParams.left, menuParams.top);
-                
+
                 menuHelper.PrintMenuElements(menu, menuParams);
 
                 menuParams.key = Console.ReadKey(false);
@@ -146,97 +147,78 @@ namespace CarRentalSystem.Helpers
                 switch (option)
                 {
                     case "1":
-                        string carMake = "";
+                        string customerName = "";
                         do
                         {
                             menuHelper.PrintAddEditCarMenuHeader(newItem);
-                            Console.Write("\tCar manufacturerr: ");
-                            carMake = Console.ReadLine() ?? string.Empty;
+                            Console.Write("\tCustomer name: ");
+                            customerName = Console.ReadLine() ?? string.Empty;
 
-                            if (string.IsNullOrEmpty(carMake))
+                            if (string.IsNullOrEmpty(customerName))
                             {
-                                Console.Write("\tCar manufacturerr cannot be empty! Cancel input? (\"Y/n\"): ");
+                                Console.Write("\tCustomer name cannot be empty! Cancel input? (\"Y/n\"): ");
                                 if ((Console.ReadLine() ?? "n").ToLower() == "y")
                                     break;
                             }
 
-                        } while (string.IsNullOrEmpty(carMake));
-                        if (!string.IsNullOrEmpty(carMake) && item.Make != carMake)
-                            item.Make = carMake;
+                        } while (string.IsNullOrEmpty(customerName));
+                        if (!string.IsNullOrEmpty(customerName) && item.Name != customerName)
+                            item.Name = customerName;
                         break;
                     case "2":
-                        string carModel = "";
+                        string customerEmail = ""; // TODO - Validating
                         do
                         {
                             menuHelper.PrintAddEditCarMenuHeader(newItem);
-                            Console.Write("\tCar model: ");
-                            carModel = Console.ReadLine() ?? string.Empty;
+                            Console.Write("\tCustomer e-mail address: ");
+                            customerEmail = Console.ReadLine() ?? string.Empty;
 
-                            if (string.IsNullOrEmpty(carModel))
+                            if (string.IsNullOrEmpty(customerEmail))
                             {
-                                Console.Write("\tCar model cannot be empty! Cancel input? (\"Y/n\"): ");
+                                Console.Write("\tE-mail address cannot be empty! Cancel input? (\"Y/n\"): ");
                                 if ((Console.ReadLine() ?? "n").ToLower() == "y")
                                     break;
                             }
 
-                        } while (string.IsNullOrEmpty(carModel));
-                        if (!string.IsNullOrEmpty(carModel) && item.Model != carModel)
-                            item.Model = carModel;
+                        } while (string.IsNullOrEmpty(customerEmail));
+                        if (!string.IsNullOrEmpty(customerEmail) && item.Email != customerEmail)
+                            item.Email = customerEmail;
                         break;
                     case "3":
-                        int carYear = 0;
+                        string customerPhone = "";
                         do
                         {
                             menuHelper.PrintAddEditCarMenuHeader(newItem);
-                            Console.Write("\tCar year: ");
-                            if (!int.TryParse(Console.ReadLine() ?? string.Empty, out carYear))
-                                                        {
-                                Console.Write("\tCar year cannot be empty! Cancel input? (\"Y/n\"): ");
+                            Console.Write("\tCustomer phone number: ");
+                            customerPhone = Console.ReadLine() ?? string.Empty;
+
+                            if (string.IsNullOrEmpty(customerPhone))
+                            {
+                                Console.Write("\tPhone number cannot be empty! Cancel input? (\"Y/n\"): ");
                                 if ((Console.ReadLine() ?? "n").ToLower() == "y")
                                     break;
                             }
-                        } while (carYear <= 0);
-                        if (carYear > 0 && item.Year != carYear)
-                            item.Year = carYear;
+
+                        } while (string.IsNullOrEmpty(customerPhone));
+                        if (!string.IsNullOrEmpty(customerPhone) && item.Phone != customerPhone)
+                            item.Phone = customerPhone;
                         break;
                     case "4":
-                        string carType = "";
-                        do
-                        {
-                            menuHelper.PrintAddEditCarMenuHeader(newItem);
-                            Console.Write("\tCar type: ");
-                            carType = Console.ReadLine() ?? string.Empty;
-
-                            if (string.IsNullOrEmpty(carType))
-                            {
-                                Console.Write("\tCar type cannot be empty! Cancel input? (\"Y/n\"): ");
-                                if ((Console.ReadLine() ?? "n").ToLower() == "y")
-                                    break;
-                            }
-
-                        } while (string.IsNullOrEmpty(carType));
-                        if (!string.IsNullOrEmpty(carType) && item.CarType != carType)
-                            item.CarType = carType;
-                        break;
-                    case "5":
-                        item.Availability = !item.Availability;
-                        break;
-                    case "6":
                         // TODO - Validating
                         running = false;
                         break;
-                    case "7": // Cancel
+                    case "5": // Cancel
                         cancel = true;
                         running = false;
                         break;
                 }
 
                 Console.CursorVisible = false;
-                menuHelper.PrintAddEditCarMenuHeader(newItem);
+                menuHelper.PrintAddEditCustomerMenuHeader(newItem);
                 (menuParams.left, menuParams.top) = Console.GetCursorPosition();
-                menu = menuHelper.GetAddEditCarMenu(item, newItem);
-
+                menu = menuHelper.GetAddEditCustomerMenu(item);
             }
+
 
             if (cancel)
                 return false;
@@ -249,19 +231,25 @@ namespace CarRentalSystem.Helpers
             }
 
             return true;
+
         }
-    
-        public bool RemoveItem(Car car)
+
+        public bool RemoveItem(Customer customer)
         {
             MenuHelper.PrintAppName();
 
-            Console.Write($"\tDelete car \"{car.Info()}\" and all its data? (\"Y/n\"): ");
+            Console.Write($"\tDelete customer \"{customer.Info()}\" and all his data? (\"Y/n\"): ");
             if ((Console.ReadLine() ?? "n").ToLower() != "y")
                 return false;
 
-            dbService.Delete(car);
+            dbService.Delete(customer);
 
             return true;
+        }
+
+        bool IHelper<Customer>.AddEditItem(Customer? item)
+        {
+            return AddEditItem(item);
         }
     }
 }

@@ -8,6 +8,5 @@ namespace CarRentalSystem.Models.Interfaces
         DateTime StartDate { get; set; }
         DateTime EndDate { get; set; }
 
-        string Info();
     }
 }

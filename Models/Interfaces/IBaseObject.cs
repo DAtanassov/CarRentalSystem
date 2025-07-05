@@ -5,5 +5,6 @@ namespace CarRentalSystem.Models.Interfaces
     {
         int ID { get; set; }
         string Info();
+        string ExtendedInfo();
     }
 }

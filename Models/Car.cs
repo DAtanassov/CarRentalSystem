@@ -47,7 +47,7 @@ namespace CarRentalSystem.Models
 
         public string ExtendedInfo()
         {
-            return Info() + $", {(Availability ? "Available" : "Rented")}";
+            return Info() + $", ID {ID}, {(Availability ? "Available" : "Rented")}";
         }
     }
 }

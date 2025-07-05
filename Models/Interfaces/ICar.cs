@@ -9,6 +9,5 @@ namespace CarRentalSystem.Models.Interfaces
         string CarType { get; set; }
         bool Availability { get; set; }
 
-        
     }
 }

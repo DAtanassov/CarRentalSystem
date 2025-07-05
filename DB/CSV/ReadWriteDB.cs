@@ -100,11 +100,11 @@ namespace CarRentalSystem.DB.CSV
 
             using (var writer = new StreamWriter(dbPath))
             {
-                // Properties of type T for header
+                // Properties of type T
                 PropertyInfo[] prop = typeof(T).GetProperties();
                 if (prop.Length == 0)
                 {
-                    throw new ApplicationException("No properties found in the type T to write to CSV.");
+                    throw new ApplicationException($"No properties found in the type {nameof(T)} to write to CSV.");
                 }
                 // Write header
                 writer.WriteLine(string.Join(";", prop.Select(p => p.Name)));
