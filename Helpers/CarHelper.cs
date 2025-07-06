@@ -8,6 +8,7 @@ namespace CarRentalSystem.Helpers
     {
         // Object for read and write to database file
         private static readonly DBService<Car> dbService = new DBService<Car>(new CarDB());
+        private static readonly Validator validator = new Validator();
 
         public List<Car> GetItems() => dbService.GetList();
 
@@ -196,6 +197,7 @@ namespace CarRentalSystem.Helpers
 
             return car;
         }
+       
         public void PrintItems() => PrintItems(null);
 
         public void PrintItems(bool? available)
@@ -410,10 +412,7 @@ namespace CarRentalSystem.Helpers
                         item.Availability = !item.Availability;
                         break;
                     case "6":
-                        if (!string.IsNullOrEmpty(item.Make)
-                            && !string.IsNullOrEmpty(item.Model)
-                            && !string.IsNullOrEmpty(item.CarType)
-                            && item.Year > 0)
+                        if (validator.CarValidate(item))
                             running = false;
                         else
                         {

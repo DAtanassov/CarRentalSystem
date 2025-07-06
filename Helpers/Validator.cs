@@ -3,14 +3,13 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using CarRentalSystem.DB.Interfaces;
 using CarRentalSystem.Helpers.Interfaces;
-using CarRentalSystem.Models.Interfaces;
 using CarRentalSystem.Models;
 
 namespace CarRentalSystem.Helpers
 {
-    internal class Validator<T> : IValidator<T> where T : IBaseObject, ICustomer
+    internal class Validator : IValidator
     {
-        public bool EmailValidate(string email, int id, IDatabase<T> _db, List<T>? items = null)
+        public bool EmailValidate(string email, int id, IDatabase<Customer> _db, List<Customer>? items = null)
         {
             if (string.IsNullOrEmpty(email))
                 return false;
@@ -32,7 +31,7 @@ namespace CarRentalSystem.Helpers
 
             return true;
         }
-        public bool PhoneNumberValidate(string phone, int id, IDatabase<T> _db, List<T>? items = null)
+        public bool PhoneNumberValidate(string phone, int id, IDatabase<Customer> _db, List<Customer>? items = null)
         {
             if (string.IsNullOrEmpty(phone))
                 return false;
@@ -52,12 +51,20 @@ namespace CarRentalSystem.Helpers
             return true;
         }
 
-        public bool CustomerValidate(T item)
+        public bool CustomerValidate(Customer item)
         {
             return !string.IsNullOrEmpty(item.Name)
                                 && !string.IsNullOrEmpty(item.Email)
                                 && !string.IsNullOrEmpty(item.Phone);
         }
 
+        public bool CarValidate(Car item)
+        {
+            return !string.IsNullOrEmpty(item.Make)
+                            && !string.IsNullOrEmpty(item.Model)
+                            && !string.IsNullOrEmpty(item.CarType)
+                            && item.Year > 0;
+        }
+        
     }
 }

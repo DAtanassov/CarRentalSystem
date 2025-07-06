@@ -8,7 +8,7 @@ namespace CarRentalSystem.Helpers
     {
         // Object for read and write to database file
         private static readonly DBService<Customer> dbService = new DBService<Customer>(new CustomerDB());
-        private static readonly Validator<Customer> validator = new Validator<Customer>();
+        private static readonly Validator validator = new Validator();
 
         public List<Customer> GetItems() => dbService.GetList();
 
