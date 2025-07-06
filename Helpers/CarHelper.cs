@@ -4,14 +4,30 @@ using CarRentalSystem.Models;
 
 namespace CarRentalSystem.Helpers
 {
+    /// <summary>
+    /// Helper class for managing car objects in the car rental system.
+    /// </summary>
     public class CarHelper : IHelper<Car>, ISearchable
     {
-        // Object for read and write to database file
+        /// <summary>
+        /// Object for read and write to database file
+        /// </summary>
         private static readonly DBService<Car> dbService = new DBService<Car>(new CarDB());
+        /// <summary>
+        /// Instance of the Validator class for validating car objects.
+        /// </summary>
         private static readonly Validator validator = new Validator();
 
+        /// <summary>
+        /// Retrieves all items.
+        /// </summary>
+        /// <returns></returns>
         public List<Car> GetItems() => dbService.GetList();
-
+        /// <summary>
+        /// Retrieves items by array of IDs.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public List<Car> GetItems(int[] id)
         {
             List<Car> items = GetItems();
@@ -21,20 +37,33 @@ namespace CarRentalSystem.Helpers
 
             return items;
         }
-
+        /// <summary>
+        /// Retrieves a single item by its identifier.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Car? GetItemById(int id)
         {
             List<Car> items = GetItems([id]);
             return GetItemById(items, id);
         }
-
+        /// <summary>
+        /// Retrieves an item with the specified ID from a given list.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Car? GetItemById(List<Car> items, int id)
         {
             if (items.Count == 0)
                 return null;
             return items.FirstOrDefault(i => i.ID == id);
         }
-
+        /// <summary>
+        /// Searches for a car in a list of cars based on user input.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
         public Car? SearchCars(List<Car>? items)
         {
             if (items == null)
@@ -197,9 +226,14 @@ namespace CarRentalSystem.Helpers
 
             return car;
         }
-       
+        /// <summary>
+        /// Displays all items in a user-friendly format.
+        /// </summary>
         public void PrintItems() => PrintItems(null);
-
+        /// <summary>
+        /// Displays all items in a user-friendly format.
+        /// </summary>
+        /// <param name="available"></param>
         public void PrintItems(bool? available)
         {
             MenuHelper.PrintAppName();
@@ -218,9 +252,16 @@ namespace CarRentalSystem.Helpers
             foreach (Car item in items)
                 Console.WriteLine($"\t{++counter}. {item.ExtendedInfo()}");
         }
-
+        /// <summary>
+        /// Select an item from a data source
+        /// </summary>
+        /// <returns></returns>
         public Car? SelectItem() => SelectItem(null);
-
+        /// <summary>
+        /// Select an item from a data source
+        /// </summary>
+        /// <param name="available"></param>
+        /// <returns></returns>
         public Car? SelectItem(bool? available)
         {
             List<Car> items = GetItems();
@@ -281,11 +322,22 @@ namespace CarRentalSystem.Helpers
 
             return item;
         }
-
+        /// <summary>
+        /// Adds a new item.
+        /// </summary>
+        /// <returns></returns>
         public bool AddItem() => AddEditItem(null);
-
+        /// <summary>
+        /// Edit an existing item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool EditItem(Car item) => AddEditItem(item);
-
+        /// <summary>
+        /// Implementation of adding or editing an item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool AddEditItem(Car? item)
         {
             bool newItem = (item == null);
@@ -447,7 +499,11 @@ namespace CarRentalSystem.Helpers
 
             return true;
         }
-    
+        /// <summary>
+        /// Removes an item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool RemoveItem(Car item)
         {
             string title = "Car";
@@ -525,8 +581,13 @@ namespace CarRentalSystem.Helpers
 
             return !cancel;
         }
-    
-        public bool ChangeAlailability(Car car, bool available)
+        /// <summary>
+        /// Change availability of a car.
+        /// </summary>
+        /// <param name="car"></param>
+        /// <param name="available"></param>
+        /// <returns></returns>
+        public bool ChangeAvailability(Car car, bool available)
         {
             car.Availability = available;
             

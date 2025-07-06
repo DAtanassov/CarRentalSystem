@@ -4,14 +4,30 @@ using CarRentalSystem.Models;
 
 namespace CarRentalSystem.Helpers
 {
+    /// <summary>
+    /// Helper class for managing customer objects in the car rental system.
+    /// </summary>
     public class CustomerHelper : IHelper<Customer>
     {
-        // Object for read and write to database file
+        /// <summary>
+        /// Object for read and write to database file
+        /// </summary>
         private static readonly DBService<Customer> dbService = new DBService<Customer>(new CustomerDB());
+        /// <summary>
+        /// Instance of the Validator class for validating customer objects and their properties.
+        /// </summary>
         private static readonly Validator validator = new Validator();
 
+        /// <summary>
+        /// Retrieves all items.
+        /// </summary>
+        /// <returns></returns>
         public List<Customer> GetItems() => dbService.GetList();
-
+        /// <summary>
+        /// Retrieves items by array of IDs.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public List<Customer> GetItems(int[] id)
         {
             List<Customer> items = GetItems();
@@ -21,20 +37,31 @@ namespace CarRentalSystem.Helpers
 
             return items;
         }
-        
+        /// <summary>
+        /// Retrieves a single item by its identifier.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Customer? GetItemById(int id)
         {
             List<Customer> items = GetItems([id]);
             return GetItemById(items, id);
         }
-
+        /// <summary>
+        /// Retrieves an item with the specified ID from a given list.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Customer? GetItemById(List<Customer> items, int id)
         {
             if (items.Count == 0)
                 return null;
             return items.FirstOrDefault(i => i.ID == id);
         }
-
+        /// <summary>
+        /// Displays all items in a user-friendly format.
+        /// </summary>
         public void PrintItems()
         {
             MenuHelper.PrintAppName();
@@ -48,7 +75,10 @@ namespace CarRentalSystem.Helpers
                 Console.WriteLine($"\t{++counter}. {item.ExtendedInfo()}");
 
         }
-
+        /// <summary>
+        /// Select an item from a data source
+        /// </summary>
+        /// <returns></returns>
         public Customer? SelectItem()
         {
             List<Customer> items = GetItems();
@@ -106,11 +136,22 @@ namespace CarRentalSystem.Helpers
 
             return item;
         }
-
+        /// <summary>
+        /// Adds a new item.
+        /// </summary>
+        /// <returns></returns>
         public bool AddItem() => AddEditItem(null);
-
+        /// <summary>
+        /// Edit an existing item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool EditItem(Customer item) => AddEditItem(item);
-
+        /// <summary>
+        /// Implementation of adding or editing an item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool AddEditItem(Customer? item)
         {
             bool newItem = (item == null);
@@ -266,7 +307,11 @@ namespace CarRentalSystem.Helpers
             return true;
 
         }
-
+        /// <summary>
+        /// Removes an item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool RemoveItem(Customer item)
         {
             string title = "Customer";

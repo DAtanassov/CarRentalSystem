@@ -5,11 +5,23 @@ using System.Text;
 
 namespace CarRentalSystem.Models
 {
+    /// <summary>
+    /// A class representing the menus of the Car Rental System application.
+    /// </summary>
     internal class Menu : IMenu
     {
+        /// <summary>
+        /// Static readonly field for the MenuHelper instance.
+        /// </summary>
         private static readonly MenuHelper menuHelper = new MenuHelper();
+        /// <summary>
+        /// Static readonly field for the CarHelper instance.
+        /// </summary>
         private static readonly CarHelper carHelper = new CarHelper();
 
+        /// <summary>
+        /// Implements the Run method from the IMenu interface.
+        /// </summary>
         public void Run()
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -18,7 +30,9 @@ namespace CarRentalSystem.Models
 
             MainMenu();
         }
-        
+        /// <summary>
+        /// Implements the ExitMenu method from the IMenu interface.
+        /// </summary>
         public void ExitMenu()
         {
             MenuHelper.PrintAppName();
@@ -32,6 +46,9 @@ namespace CarRentalSystem.Models
             }
         }
 
+        /// <summary>
+        /// The MainMenu method displays the main menu of the application and handles user input.
+        /// </summary>
         private void MainMenu()
         {
             Console.CursorVisible = false;
@@ -124,7 +141,9 @@ namespace CarRentalSystem.Models
             }
 
         }
-
+        /// <summary>
+        /// The CarsMenu method displays the cars menu of the application and handles user input for managing cars.
+        /// </summary>
         private void CarsMenu()
         {
             Console.CursorVisible = false;
@@ -238,7 +257,9 @@ namespace CarRentalSystem.Models
                 (menuParams.left, menuParams.top) = Console.GetCursorPosition();
             }
         }
-
+        /// <summary>
+        /// The CustomersMenu method displays the customers menu of the application and handles user input for managing customers.
+        /// </summary>
         private void CustomersMenu()
         {
             CustomerHelper customerHelper = new CustomerHelper();
@@ -354,7 +375,9 @@ namespace CarRentalSystem.Models
                 (menuParams.left, menuParams.top) = Console.GetCursorPosition();
             }
         }
-
+        /// <summary>
+        /// The RentACarMenu method displays the rent a car menu of the application and handles user input for renting a car.
+        /// </summary>
         private void RentACarMenu()
         {
             CustomerHelper customerHelper = new CustomerHelper();

@@ -3,6 +3,9 @@ using CarRentalSystem.Models;
 
 namespace CarRentalSystem.DB.CSV
 {
+    /// <summary>
+    /// Provides a CRUD operations on a data store for the Customer class in a .csv file.
+    /// </summary>
     internal class CustomerDB : ReadWriteDB<Customer>, IDatabase<Customer>
     {
         protected readonly static string path = "Customers.csv";

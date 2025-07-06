@@ -1,14 +1,20 @@
-﻿
-using CarRentalSystem.Models;
-using System.Reflection.PortableExecutable;
+﻿using CarRentalSystem.Models;
 
 namespace CarRentalSystem.Helpers
 {
+    /// <summary>
+    /// Helper class for managing console menus in the Car Rental System application.
+    /// </summary>
     public class MenuHelper
     {
-        // Static readonly field for the application name
+        /// <summary>
+        /// Static readonly field for the application name
+        /// </summary>
         public static readonly string appName = "Car Rental System";
 
+        /// <summary>
+        /// Structure to hold menu parameters.
+        /// </summary>
         public struct MenuParams
         {
             // Properties to hold the menu parameters
@@ -25,6 +31,10 @@ namespace CarRentalSystem.Helpers
             }
         }
 
+        /// <summary>
+        /// Prints the application name in the console.
+        /// </summary>
+        /// <param name="clear"></param>
         public static void PrintAppName(bool clear = true)
         {
             if (clear)
@@ -33,6 +43,11 @@ namespace CarRentalSystem.Helpers
             Console.WriteLine($"\t\t\u001b[1m{appName}\u001b[0m\n");
         }
 
+        /// <summary>
+        /// Prints the menu header with the specified header text and an option to print the application name.
+        /// </summary>
+        /// <param name="header"></param>
+        /// <param name="printName"></param>
         private void PrintMenuHeader(string header, bool printName)
         {
             if (printName)
@@ -41,6 +56,11 @@ namespace CarRentalSystem.Helpers
             Console.WriteLine($"\t\t\u001b[1m{header}\u001b[0m\n");
         }
 
+        /// <summary>
+        /// Prints the menu elements based on the provided dictionary and menu parameters.
+        /// </summary>
+        /// <param name="menu"></param>
+        /// <param name="menuParams"></param>
         public void PrintMenuElements(Dictionary<int, string[]> menu, MenuParams menuParams)
         {
             // Print the menu elements
@@ -52,9 +72,17 @@ namespace CarRentalSystem.Helpers
 
         }
 
+        /// <summary>
+        /// Prints the main menu header with an option to print the application name.
+        /// </summary>
+        /// <param name="printName"></param>
         public void PrintMainMenuHeader(bool printName = true)
             => PrintMenuHeader("Main Menu", printName);
 
+        /// <summary>
+        /// Defines the main menu items and returns them as a dictionary.
+        /// </summary>
+        /// <returns></returns>
         public Dictionary<int, string[]> GetMainMenu()
         {
             // Create a dictionary to hold the Main menu items
@@ -70,9 +98,17 @@ namespace CarRentalSystem.Helpers
             return menu;
         }
 
+        /// <summary>
+        /// Prints the Cars menu header with an option to print the application name.
+        /// </summary>
+        /// <param name="printName"></param>
         public void PrintCarsMenuHeader(bool printName = true)
             => PrintMenuHeader("Cars Menu", printName);
 
+        /// <summary>
+        /// Defines the Cars menu items and returns them as a dictionary.
+        /// </summary>
+        /// <returns></returns>
         public Dictionary<int, string[]> GetCarsMenu()
         {
             // Create a dictionary to hold the Customers menu items
@@ -88,9 +124,17 @@ namespace CarRentalSystem.Helpers
             return menu;
         }
 
+        /// <summary>
+        /// Prints the Customers menu header with an option to print the application name.
+        /// </summary>
+        /// <param name="printName"></param>
         public void PrintCustomersMenuHeader(bool printName = true)
             => PrintMenuHeader("Customers Menu", printName);
 
+        /// <summary>
+        /// Defines the Customers menu items and returns them as a dictionary.
+        /// </summary>
+        /// <returns></returns>
         public Dictionary<int, string[]> GetCustomersMenu()
         {
             // Create a dictionary to hold the Customers menu items
@@ -106,9 +150,20 @@ namespace CarRentalSystem.Helpers
             return menu;
         }
 
+        /// <summary>
+        /// Prints the header for adding or editing a car, with an option to print the application name.
+        /// </summary>
+        /// <param name="newItem"></param>
+        /// <param name="printName"></param>
         public void PrintAddEditCarMenuHeader(bool newItem, bool printName = true)
             => PrintMenuHeader($"{(newItem ? "Create" : "Edit")} Car", printName);
 
+        /// <summary>
+        /// Defines the menu items for adding or editing a car and returns them as a dictionary.
+        /// </summary>
+        /// <param name="car"></param>
+        /// <param name="newItem"></param>
+        /// <returns></returns>
         public Dictionary<int, string[]> GetAddEditCarMenu(Car car, bool newItem)
         {
             // Create a dictionary to hold the car add/edit menu items
@@ -126,9 +181,19 @@ namespace CarRentalSystem.Helpers
             return menu;
         }
 
+        /// <summary>
+        /// Prints the header for adding or editing a customer, with an option to print the application name.
+        /// </summary>
+        /// <param name="newItem"></param>
+        /// <param name="printName"></param>
         public void PrintAddEditCustomerMenuHeader(bool newItem, bool printName = true)
             => PrintMenuHeader($"{(newItem ? "Create" : "Edit")} Customer", printName);
 
+        /// <summary>
+        /// Defines the menu items for adding or editing a customer and returns them as a dictionary.
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <returns></returns>
         public Dictionary<int, string[]> GetAddEditCustomerMenu(Customer customer)
         {
             // Create a dictionary to hold the car add/edit menu items
@@ -143,9 +208,18 @@ namespace CarRentalSystem.Helpers
             return menu;
         }
 
+        /// <summary>
+        /// Prints the header for removing an item, with an option to print the application name.
+        /// </summary>
+        /// <param name="itemName"></param>
+        /// <param name="printName"></param>
         public void PrintRemoveItemHeader(string itemName, bool printName = true)
             => PrintMenuHeader($"Remove {itemName}", printName);
 
+        /// <summary>
+        /// Defines the menu items for removing an item and returns them as a dictionary.
+        /// </summary>
+        /// <returns></returns>
         public Dictionary<int, string[]> GetRemoveItemMenu()
         {
             // Create a dictionary to hold the Main menu items
@@ -158,9 +232,21 @@ namespace CarRentalSystem.Helpers
             return menu;
         }
 
+        /// <summary>
+        /// Prints the header for the Rent A Car menu, with an option to print the application name.
+        /// </summary>
+        /// <param name="printName"></param>
         public void PrintRentACarHeader(bool printName = true)
-            => PrintMenuHeader("Ren A Car", printName);
-        
+            => PrintMenuHeader("Rent A Car", printName);
+
+        /// <summary>
+        /// Defines the menu items for renting a car and returns them as a dictionary.
+        /// </summary>
+        /// <param name="car"></param>
+        /// <param name="customer"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
         public Dictionary<int, string[]> GetRentACarMenu(Car? car, Customer? customer, DateTime? startDate, DateTime? endDate)
         {
             // Create a dictionary to hold the Main menu items
@@ -176,8 +262,21 @@ namespace CarRentalSystem.Helpers
             return menu;
         }
 
+        /// <summary>
+        /// Prints the header for the Search Car menu, with an option to print the application name.
+        /// </summary>
+        /// <param name="printName"></param>
         public void PrintSearchItemHeader(bool printName = true)
             => PrintMenuHeader("Search Car", printName);
+
+        /// <summary>
+        /// Defines the menu items for searching a car and returns them as a dictionary.
+        /// </summary>
+        /// <param name="make"></param>
+        /// <param name="model"></param>
+        /// <param name="status"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Dictionary<int, string[]> GetSearchFilterMenu(string make, string model, bool status, int id)
         {
             // Create a dictionary to hold the Main menu items
@@ -193,6 +292,11 @@ namespace CarRentalSystem.Helpers
             return menu;
         }
 
+        /// <summary>
+        /// Defines the menu items for selecting a car from a list of search results and returns them as a dictionary.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
         public Dictionary<int, string[]> GetSearchItemMenu(List<Car> items)
         {
             // Create a dictionary to hold the Main menu items
@@ -209,6 +313,10 @@ namespace CarRentalSystem.Helpers
             return menu;
         }
 
+        /// <summary>
+        /// Prints the header for selecting a car, with an option to print the application name.
+        /// </summary>
+        /// <param name="printName"></param>
         public void PrintSelectCarHeader(bool printName = true)
             => PrintMenuHeader("Select Car", printName);
     }

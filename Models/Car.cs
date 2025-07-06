@@ -3,14 +3,36 @@ using CarRentalSystem.Models.Interfaces;
 
 namespace CarRentalSystem.Models
 {
+    /// <summary>
+    /// Class representing a car in the car rental system.
+    /// </summary>
     public class Car : BaseObject, ICar
     {
+        /// <summary>
+        /// Property for the manifacturer's make of the car.
+        /// </summary>
         public string Make { get; set; }
+        /// <summary>
+        /// Property for the model of the car.
+        /// </summary>
         public string Model { get; set; }
+        /// <summary>
+        /// Property for the year of manufacture of the car.
+        /// </summary>
         public int Year { get; set; }
+        /// <summary>
+        /// Property for the car's type, such as SUV, Sedan, etc.
+        /// </summary>
         public string CarType { get; set; }
+        /// <summary>
+        /// Property for car availability status.
+        /// </summary>
         public bool Availability { get; set; }
 
+        /// <summary>
+        /// Constructor for deserializing the Car class.
+        /// </summary>
+        /// <param name="args"></param>
         public Car(params string[] args)
         {
             if (args != null && args.Any())
@@ -33,6 +55,12 @@ namespace CarRentalSystem.Models
             }
 
         }
+        /// <summary>
+        /// Constructor for creating a new Car object.
+        /// </summary>
+        /// <param name="make"></param>
+        /// <param name="model"></param>
+        /// <param name="carType"></param>
         public Car(string make = "", string model = "", string carType = "")
         {
             Make = make;
@@ -42,11 +70,18 @@ namespace CarRentalSystem.Models
             Availability = true;
         }
 
+        /// <summary>
+        /// Implementation of the Info method from the IInfo interface.
+        /// </summary>
+        /// <returns></returns>
         public override string Info()
         {
             return $"{Make} {Model}, type: {CarType} ({Year}y.)";
         }
-
+        /// <summary>
+        /// Implementation of the ExtendedInfo method from the IInfo interface.
+        /// </summary>
+        /// <returns></returns>
         public override string ExtendedInfo()
         {
             return Info() + $", ID: {ID}, {(Availability ? "Available" : "Rented")}";
