@@ -1,5 +1,6 @@
 ﻿
 using CarRentalSystem.Models;
+using System.Reflection.PortableExecutable;
 
 namespace CarRentalSystem.Helpers
 {
@@ -159,6 +160,7 @@ namespace CarRentalSystem.Helpers
 
         public void PrintRentACarHeader(bool printName = true)
             => PrintMenuHeader("Ren A Car", printName);
+        
         public Dictionary<int, string[]> GetRentACarMenu(Car? car, Customer? customer, DateTime? startDate, DateTime? endDate)
         {
             // Create a dictionary to hold the Main menu items
@@ -173,5 +175,41 @@ namespace CarRentalSystem.Helpers
 
             return menu;
         }
+
+        public void PrintSearchItemHeader(bool printName = true)
+            => PrintMenuHeader("Search Car", printName);
+        public Dictionary<int, string[]> GetSearchFilterMenu(string make, string model, bool status, int id)
+        {
+            // Create a dictionary to hold the Main menu items
+            Dictionary<int, string[]> menu = new Dictionary<int, string[]>();
+
+            menu.Add(menu.Count + 1, [$"Make: {make}", "1"]);
+            menu.Add(menu.Count + 1, [$"Model: {model}", "2"]);
+            menu.Add(menu.Count + 1, [$"Status: {(status ? "Available" : "Rented")}", "3"]);
+            menu.Add(menu.Count + 1, [$"ID: {id}", "4"]);
+            menu.Add(menu.Count + 1, ["Search", "5"]);
+            menu.Add(menu.Count + 1, ["Cancel", "6"]);
+
+            return menu;
+        }
+
+        public Dictionary<int, string[]> GetSearchItemMenu(List<Car> items)
+        {
+            // Create a dictionary to hold the Main menu items
+            Func<string[], string[]> iName = (string[] n) => n;
+            Dictionary<int, string[]> menu = items.Select((val, index) => new { Index = index, Value = val })
+                                                    .ToDictionary(h => h.Index, h => iName([h.Value.Info(), h.Value.ID.ToString()]));
+            menu.Add(menu.Count, ["Cancel", "0"]);
+            for (int i = menu.Count; i > 0; i--)
+            {
+                menu.Add(i, menu[i - 1]);
+                menu.Remove(i - 1);
+            }
+
+            return menu;
+        }
+
+        public void PrintSelectCarHeader(bool printName = true)
+            => PrintMenuHeader("Select Car", printName);
     }
 }

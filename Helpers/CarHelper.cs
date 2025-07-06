@@ -4,7 +4,7 @@ using CarRentalSystem.Models;
 
 namespace CarRentalSystem.Helpers
 {
-    public class CarHelper : IHelper<Car>
+    public class CarHelper : IHelper<Car>, ISearchable
     {
         // Object for read and write to database file
         private static readonly DBService<Car> dbService = new DBService<Car>(new CarDB());
@@ -34,6 +34,168 @@ namespace CarRentalSystem.Helpers
             return items.FirstOrDefault(i => i.ID == id);
         }
 
+        public Car? SearchCars(List<Car>? items)
+        {
+            if (items == null)
+                items = GetItems();
+            items = items.Where(x => !x.IsDeleted).ToList();
+
+            Car? car = null;
+            bool cancel = false;
+            string make = string.Empty;
+            string model = string.Empty;
+            int id = 0;
+            bool status = true; // true - available, false - rented
+
+            Console.CursorVisible = false;
+            MenuHelper menuHelper = new MenuHelper();
+
+            menuHelper.PrintSearchItemHeader();
+
+            Dictionary<int, string[]> menu = menuHelper.GetSearchFilterMenu(make, model, status, id);
+
+            var menuParams = new MenuHelper.MenuParams(1);
+            (menuParams.left, menuParams.top) = Console.GetCursorPosition();
+            bool running = true;
+            while (running)
+            {
+                Console.SetCursorPosition(menuParams.left, menuParams.top);
+
+                menuHelper.PrintMenuElements(menu, menuParams);
+
+                menuParams.key = Console.ReadKey(false);
+
+                string option = string.Empty;
+
+                switch (menuParams.key.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                        menuParams.choice = menuParams.choice == 1 ? menu.Count : menuParams.choice - 1;
+                        break;
+
+                    case ConsoleKey.DownArrow:
+                        menuParams.choice = menuParams.choice == menu.Count ? 1 : menuParams.choice + 1;
+                        break;
+
+                    case ConsoleKey.Enter:
+                        option = menu[menuParams.choice][1];
+                        break;
+                }
+
+                if (string.IsNullOrEmpty(option) && menuParams.key.Key != ConsoleKey.Enter)
+                    continue; // Skip if no option selected
+
+
+                Console.CursorVisible = true;
+
+                switch (option)
+                {
+                    case "1": // Make
+                        menuHelper.PrintSearchItemHeader();
+                        Console.Write("\tCar manufacturer: ");
+                        make = Console.ReadLine() ?? string.Empty;
+                        if (string.IsNullOrEmpty(make))
+                            make = string.Empty;
+                        break;
+                    case "2": // Model
+                        menuHelper.PrintSearchItemHeader();
+                        Console.Write("\tCar model: ");
+                        model = Console.ReadLine() ?? string.Empty;
+                        break;
+                    case "3": // Status
+                        menuHelper.PrintSearchItemHeader();
+                        Console.Write("\tCar status [available/rented]: ");
+                        string statusInput = Console.ReadLine() ?? string.Empty;
+                        if (statusInput.ToLower() == "available")
+                            status = true;
+                        else if (statusInput.ToLower() == "rented")
+                            status = false;
+                        else
+                            status = true; // Default to available if input is invalid
+                        break;
+                    case "4": // ID
+                        menuHelper.PrintSearchItemHeader();
+                        Console.Write("\tCar ID: ");
+                        if (int.TryParse(Console.ReadLine(), out int parsedId))
+                            id = parsedId;
+                        else
+                            id = 0;
+                        break;
+                    case "5": // Search
+                        running = false;
+                        break;
+                    case "6": // Cancel
+                        cancel = true;
+                        running = false;
+                        break;
+                }
+
+                Console.CursorVisible = false;
+                menuHelper.PrintSearchItemHeader();
+                (menuParams.left, menuParams.top) = Console.GetCursorPosition();
+                menu = menuHelper.GetSearchFilterMenu(make, model, status, id);
+            }
+
+            if (cancel)
+                return null;
+
+            if (id > 0)
+                return GetItemById(items, id);
+            else
+            {
+                
+                if (!string.IsNullOrEmpty(make))
+                    items = items.Where(x => x.Make.Contains(make, StringComparison.OrdinalIgnoreCase)).ToList();
+                if (!string.IsNullOrEmpty(model))
+                    items = items.Where(x => x.Model.Contains(model, StringComparison.OrdinalIgnoreCase)).ToList();
+                if (status)
+                    items = items.Where(x => x.Availability).ToList();
+                else
+                    items = items.Where(x => !x.Availability).ToList();
+                if (items.Count == 0)
+                {
+                    Console.WriteLine("\n\tNo cars found with the specified criteria.");
+                    Console.WriteLine("\n\tPress any key to return to the main menu...");
+                    Console.ReadKey(); // Wait for user input before continuing
+                    return null;
+                }
+            }
+
+            menuHelper.PrintSelectCarHeader();
+            running = true;
+            menuParams.choice = 1;
+            (menuParams.left, menuParams.top) = Console.GetCursorPosition();
+
+            menu = menuHelper.GetSearchItemMenu(items);
+
+            while (running)
+            {
+                Console.SetCursorPosition(menuParams.left, menuParams.top);
+
+                menuHelper.PrintMenuElements(menu, menuParams);
+
+                menuParams.key = Console.ReadKey(false);
+
+                switch (menuParams.key.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                        menuParams.choice = menuParams.choice == 1 ? menu.Count : menuParams.choice - 1;
+                        continue;
+
+                    case ConsoleKey.DownArrow:
+                        menuParams.choice = menuParams.choice == menu.Count ? 1 : menuParams.choice + 1;
+                        continue;
+
+                    case ConsoleKey.Enter:
+                        if (menuParams.choice != menu.Count)
+                            car = GetItemById(items, int.Parse(menu[menuParams.choice][1]));
+                        running = false;
+                        break;
+                }
+            }
+
+            return car;
+        }
         public void PrintItems() => PrintItems(null);
 
         public void PrintItems(bool? available)
@@ -71,8 +233,7 @@ namespace CarRentalSystem.Helpers
 
             Console.CursorVisible = false;
             MenuHelper menuHelper = new MenuHelper();
-            MenuHelper.PrintAppName();
-            Console.WriteLine("\t\tSelect car\n");
+            menuHelper.PrintSelectCarHeader();
 
             var menuParams = new MenuHelper.MenuParams(1);
             (menuParams.left, menuParams.top) = Console.GetCursorPosition();
@@ -167,7 +328,6 @@ namespace CarRentalSystem.Helpers
 
                 if (string.IsNullOrEmpty(option) && menuParams.key.Key != ConsoleKey.Enter)
                     continue; // Skip if no option selected
-
 
                 Console.CursorVisible = true;
 

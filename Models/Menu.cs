@@ -406,7 +406,7 @@ namespace CarRentalSystem.Models
                 switch (option)
                 {
                     case "1":
-                        car = carHelper.SelectItem(true);
+                        car = carHelper.SearchCars(null);
                         break;
                     case "2":
                         customer = customerHelper.SelectItem();
@@ -476,7 +476,7 @@ namespace CarRentalSystem.Models
             }
 
             if ((cancel || car == null || customer == null)
-                || rentalHelper.AddItem(car, customer, startDate, endDate))
+                || rentalHelper.RentItem(car, customer, startDate, endDate))
             {
                 menuHelper.PrintRentACarHeader();
                 Console.WriteLine("\n\tThe rent was not added..");

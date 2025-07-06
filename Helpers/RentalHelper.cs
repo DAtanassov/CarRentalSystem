@@ -1,15 +1,17 @@
 ﻿using CarRentalSystem.DB.CSV;
+using CarRentalSystem.Helpers.Interfaces;
 using CarRentalSystem.Models;
 using CarRentalSystem.Models.Interfaces;
 
 namespace CarRentalSystem.Helpers
 {
-    public class RentalHelper
+    public class RentalHelper : IRentable
     {
         // Object for read and write to database file
         private static readonly DBService<Rental> dbService = new DBService<Rental>(new RentalDB());
 
         public List<Rental> GetItems() => dbService.GetList();
+        
         public Rental? GetItemByCarId(int id)
         {
             List<Rental> items = GetItems();
@@ -19,7 +21,8 @@ namespace CarRentalSystem.Helpers
 
             return items.FirstOrDefault(i => !i.IsDeleted && i.CarID == id);
         }
-        public bool AddItem(Car car, Customer customer, DateTime startDate, DateTime endDate)
+        
+        public bool RentItem(Car car, Customer customer, DateTime startDate, DateTime endDate)
         {
             Rental rental = new Rental(car.ID, customer.ID, startDate, endDate);
 
